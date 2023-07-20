@@ -14,7 +14,8 @@ class Cache:
     def store(self, data: any) -> uuid.uuid4():
         """takes a data argument and returns a string.
         generates a random key (e.g. using uuid),
-        stores the input data in Redis using the random key and return the key."""
+        stores the input data in Redis
+        using the random key and return the key."""
         key = str(uuid.uuid4())
         self._redis.set(key, data)
         return key
