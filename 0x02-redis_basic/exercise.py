@@ -72,6 +72,7 @@ class Cache:
         return value.decode("utf-8")
 
     def get_int(self, value: bytes) -> int:
+        """converts to int from bytes"""
         return int.from_bytes(value)
 
 
