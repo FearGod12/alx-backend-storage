@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Class cache"""
 import uuid
-from typing import Union, Callable
+from typing import Union, Callable, Optional
 from functools import wraps
 
 import redis
@@ -46,7 +46,7 @@ class Cache:
 
     @count_calls
     @call_history
-    def store(self, data: Union[int, float, bytes, str]) -> str:
+    def store(self, data: Union[int, float, bytes, str]) -> Optional[str]:
         """takes a data argument and returns a string.
         generates a random key (e.g. using uuid),
         stores the input data in Redis
@@ -86,5 +86,5 @@ def replay(method: Callable):
 
     print("{} was called {} times".format(method.__qualname__, len(inputs)))
     for args, output in zip(inputs, outputs):
-        args, output = args.decode("utf-8"), output.decode("utf-8")
-        print("{}(*{}) -> {}".format(method.__qualname__, str(args), output))
+        args, output = eval(args), output.decode("utf-8")
+        print("{}(*{}) -> {}".format(method.__qualname__, tuple(args), output))
