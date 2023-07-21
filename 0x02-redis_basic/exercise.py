@@ -39,14 +39,14 @@ def call_history(method: Callable) -> Callable:
 class Cache:
     """class cache which contains an instance of redis"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """class constructor"""
         self._redis = redis.Redis()
         self._redis.flushdb()
 
     @count_calls
     @call_history
-    def store(self, data: Union[int, float, bytes, str]) -> Optional[str]:
+    def store(self, data: Union[int, float, bytes, str]) -> str:
         """takes a data argument and returns a string.
         generates a random key (e.g. using uuid),
         stores the input data in Redis
@@ -55,7 +55,7 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: Callable = None) -> \
+    def get(self, key: str, fn: Optional[Callable] = None) -> \
             Union[str, float, int, bytes, None]:
         """take a key string argument and an optional Callable argument
         named fn. This callable will be used to convert the data back to
@@ -76,7 +76,7 @@ class Cache:
         return int.from_bytes(value)
 
 
-def replay(method: Callable):
+def replay(method: Callable) -> None:
     """display the number of times a particular function was called"""
     key1 = method.__qualname__ + ":inputs"
     key2 = method.__qualname__ + ":outputs"
