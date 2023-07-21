@@ -13,7 +13,7 @@ def count_calls(method: Callable) -> Callable:
 
     @wraps(method)
     def increment(self, *args, **kwargs):
-        """wrpper fucntion"""
+        """wrapper function"""
         self._redis.incr(key)
         return method(self, *args, *kwargs)
 
@@ -73,3 +73,17 @@ class Cache:
 
     def get_int(self, value: bytes) -> int:
         return int.from_bytes(value)
+
+
+def replay(method: Callable):
+    """display the number of times a particular function was called"""
+    key1 = method.__qualname__ + ":inputs"
+    key2 = method.__qualname__ + ":outputs"
+    redis = method.__self__._redis
+    inputs = redis.lrange(key1, 0, -1)
+    outputs = redis.lrange(key2, 0, -1)
+
+    print("{} was called {} times".format(method.__qualname__, len(inputs)))
+    for args, output in zip(inputs, outputs):
+        args, output = args.decode("utf-8"), output.decode("utf-8")
+        print("{}(*{}) -> {}".format(method.__qualname__, str(args), output))
