@@ -30,7 +30,7 @@ def call_history(method: Callable) -> Callable:
         """stores the history of inputs and outputs"""
         self._redis.rpush(key1, str(args))
         data = method(self, *args, **kwargs)
-        self._redis.rpush(key2, history(data))
+        self._redis.rpush(key2, data)
         return data
 
     return history
